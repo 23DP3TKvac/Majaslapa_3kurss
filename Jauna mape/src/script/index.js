@@ -171,5 +171,70 @@ function attachActionListeners() {
     });
   });
 }
-
 renderCards();
+
+const newsBtn = document.getElementById('news-btn');
+const newsQuery = document.getElementById('news-query');
+const newsResults = document.getElementById('news-results');
+const historyBox = document.getElementById('search-history');
+
+let searchHistory = JSON.parse(localStorage.getItem('newsHistory')) || [];
+
+function renderHistory() {
+  if (searchHistory.length === 0) {
+    historyBox.textContent = "Vēsture: nav datu...";
+    return;
+  }
+  historyBox.textContent = "Vēsture: " + searchHistory.join(", ");
+}
+renderHistory();
+
+async function searchNews() {
+  const query = newsQuery.value.trim();
+  if (!query) return;
+
+  searchHistory.unshift(query);
+  searchHistory = searchHistory.slice(0, 5);
+  localStorage.setItem('newsHistory', JSON.stringify(searchHistory));
+  renderHistory();
+
+  newsResults.innerHTML = "Notiek ielāde...";
+
+  try {
+    const url = `https://newsapi.org/v2/everything?q=${query}&apiKey=31f5b37b35dc41ec9728397e5fef69c3`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      newsResults.innerHTML = "Kļūda ielādējot datus!";
+      return;
+    }
+
+    const data = await response.json();
+
+    if (!data.articles || data.articles.length === 0) {
+      newsResults.innerHTML = "Dati nav pieejami.";
+      return;
+    }
+
+    newsResults.innerHTML = "";
+
+    data.articles.slice(0, 8).forEach(news => {
+      const card = document.createElement('div');
+      card.className = 'news-card';
+      card.innerHTML = `
+        <img src="${news.urlToImage || 'https://via.placeholder.com/300'}">
+        <div class="news-card-content">
+          <h4>${news.title}</h4>
+          <p>${news.description || "Apraksts nav pieejams."}</p>
+          <a href="${news.url}" target="_blank">Lasīt vairāk</a>
+        </div>
+      `;
+      newsResults.appendChild(card);
+    });
+
+  } catch (err) {
+    newsResults.innerHTML = "Radās kļūda!";
+  }
+}
+newsBtn.addEventListener("click", searchNews);
