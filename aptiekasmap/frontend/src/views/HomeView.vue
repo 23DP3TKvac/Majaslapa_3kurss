@@ -245,7 +245,7 @@
           <div class="d-flex flex-column gap-3">
             <div class="d-flex align-center gap-2">
               <v-icon color="primary">mdi-email</v-icon>
-              <span>info@aptiekasmap.lv</span>
+              <span>aptiekasmap@gmail.com</span>
             </div>
             <div class="d-flex align-center gap-2">
               <v-icon color="primary">mdi-phone</v-icon>
