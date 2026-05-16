@@ -29,11 +29,20 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/',           component: HomeView,       name: 'home' },
-    { path: '/pharmacies', component: PharmaciesView, name: 'pharmacies' },
-    { path: '/profile',    component: ProfileView,    name: 'profile' },
-    { path: '/statistics', component: StatisticsView, name: 'statistics' },
-    { path: '/admin',      component: AdminView,      name: 'admin' },
+    { path: '/pharmacies', component: PharmaciesView, name: 'pharmacies', meta: { requiresAuth: true } },
+    { path: '/profile',    component: ProfileView,    name: 'profile',    meta: { requiresAuth: true } },
+    { path: '/admin',      component: AdminView,      name: 'admin',      meta: { requiresAuth: true } },
+    { path: '/statistics', component: StatisticsView, name: 'statistics', meta: { requiresAuth: true } },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  if (to.meta.requiresAuth && !token) {
+    next('/')
+  } else {
+    next()
+  }
 })
 
 const app = createApp(App)

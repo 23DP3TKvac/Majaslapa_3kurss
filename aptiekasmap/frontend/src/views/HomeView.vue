@@ -32,21 +32,21 @@
               <div class="d-flex align-center gap-3">
                 <v-icon size="32" color="primary">mdi-pill</v-icon>
                 <div><div class="text-white font-weight-bold">Paracetamol 500mg</div>
-                <div class="text-medium-emphasis text-caption">Pieejams 4 aptiekās</div></div>
+                <div class="text-white opacity-70 text-caption">Pieejams 4 aptiekās</div></div>
               </div>
             </v-card>
             <v-card rounded="xl" color="secondary" class="pa-4 floating-card fc2">
               <div class="d-flex align-center gap-3">
                 <v-icon size="32" color="primary">mdi-map-marker</v-icon>
                 <div><div class="text-white font-weight-bold">BENU Brīvības ielā</div>
-                <div class="text-medium-emphasis text-caption">0.3 km no tevis</div></div>
+                <div class="text-white opacity-70 text-caption">0.3 km no tevis</div></div>
               </div>
             </v-card>
             <v-card rounded="xl" color="secondary" class="pa-4 floating-card fc3">
               <div class="d-flex align-center gap-3">
                 <v-icon size="32" color="primary">mdi-cash</v-icon>
                 <div><div class="text-white font-weight-bold">No €1.29</div>
-                <div class="text-medium-emphasis text-caption">Labākā cena šobrīd</div></div>
+                <div class="text-white opacity-70 text-caption">Labākā cena šobrīd</div></div>
               </div>
             </v-card>
           </v-col>
@@ -67,13 +67,13 @@
     </v-sheet>
 
     <!-- SEARCH SECTION -->
-    <v-container class="py-12" id="search-section">
+    <v-container v-if="isLoggedIn" class="py-12" id="search-section"> 
       <div class="text-center mb-8">
         <h2 class="text-h4 font-weight-bold mb-2" style="font-family:'Sora',sans-serif">Meklēt zāles</h2>
         <p class="text-medium-emphasis">Izmanto filtrus lai precīzi atrastu vajadzīgo medikamentu</p>
       </div>
-
-      <!-- ADVANCED FILTERS -->
+    
+    <!-- ADVANCED FILTERS -->
       <v-card rounded="xl" elevation="2" class="mb-6 pa-4">
         <div class="text-subtitle-1 font-weight-bold mb-4">
           <v-icon color="primary" class="mr-2">mdi-filter</v-icon>
@@ -215,6 +215,12 @@
           <v-btn color="primary" variant="tonal" class="mt-4" @click="clearFilters">Notīrīt filtrus</v-btn>
         </v-col>
       </v-row>
+    </v-container>
+
+    <v-container v-else class="py-12 text-center">
+      <v-icon size="80" color="primary">mdi-lock</v-icon>
+      <h2 class="text-h4 font-weight-bold mt-4 mb-2">Lūdzu pieslēdzies</h2>
+      <p class="text-medium-emphasis mb-6">Lai meklētu zāles un skatītu aptiekas, nepieciešams pieslēgties.</p>
     </v-container>
 
     <!-- HOW IT WORKS -->
