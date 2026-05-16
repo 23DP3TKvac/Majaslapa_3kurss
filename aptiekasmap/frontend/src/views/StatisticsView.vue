@@ -157,6 +157,20 @@ const stats   = ref({
   summary:              {},
 })
 
+const users = ref([])
+
+async function loadUsers() {
+  try {
+    const token = localStorage.getItem('token')
+    const { data } = await axios.get('/api/admin/users', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    users.value = data
+  } catch {
+    users.value = []
+  }
+}
+
 const summaryCards = computed(() => [
   { label:'Medikamenti',  value: stats.value.summary?.totalMedicines,  color:'primary', icon:'mdi-pill' },
   { label:'Aptiekas',     value: stats.value.summary?.totalPharmacies, color:'success', icon:'mdi-store' },
@@ -177,7 +191,7 @@ const availablePercent = computed(() => {
 })
 const unavailablePercent = computed(() => 100 - availablePercent.value)
 
-onMounted(async () => {
+onMounted(async () => { loadUsers()
   try {
     const { data } = await axios.get('/api/statistics')
     stats.value = data
