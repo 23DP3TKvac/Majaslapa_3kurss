@@ -10,8 +10,8 @@
       <v-btn variant="text" color="white" to="/">Sākums</v-btn>
       <v-btn variant="text" color="white" to="/pharmacies">Aptiekas</v-btn>
       <v-btn variant="text" color="white" href="#search-section">Meklēt</v-btn>
-      <v-btn variant="text" color="white" to="/statistics">Statistika</v-btn>
-      <v-btn variant="text" color="white" to="/admin">Admin</v-btn>
+      <v-btn v-if="isAdmin" variant="text" color="white" to="/statistics">Statistika</v-btn>
+      <v-btn v-if="isAdmin" variant="text" color="white" to="/admin">Admin</v-btn>
 
       <v-spacer />
 
@@ -159,8 +159,15 @@ async function handleRegister() {
 
 // Restore token on reload
 const isLoggedIn = ref(!!localStorage.getItem("token"))
+const isAdmin    = ref(false)
+
 const savedToken = localStorage.getItem('token')
-if (savedToken) axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`
+if (savedToken) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`
+  axios.get('/api/user').then(({ data }) => {
+    isAdmin.value = data.role === 'admin'
+  }).catch(() => {})
+}
 </script>
 
 <style>
