@@ -113,8 +113,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 import axios from 'axios'
 
+const auth = useAuthStore()
 const router  = useRouter()
 const user    = ref(null)
 const history = ref([])
@@ -146,8 +148,7 @@ async function logout() {
   try {
     await axios.post('/api/auth/logout')
   } catch {}
-  localStorage.removeItem('token')
-  delete axios.defaults.headers.common['Authorization']
+  auth.logout()
   router.push('/')
 }
 

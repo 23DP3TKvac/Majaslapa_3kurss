@@ -109,8 +109,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import axios from 'axios'
+import { useAuthStore } from './stores/auth'
+
+const auth        = useAuthStore()
+const isLoggedIn  = computed(() => auth.isLoggedIn)
+const isAdmin     = computed(() => auth.isAdmin)
 
 const theme       = ref(localStorage.getItem('theme') || 'light')
 const drawer      = ref(false)
@@ -132,8 +137,7 @@ async function handleLogin() {
   authError.value   = ''
   try {
     const { data } = await axios.post('/api/auth/login', loginForm.value)
-    localStorage.setItem('token', data.token)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
+    await auth.login(data.token, data.user?.role)
     loginDialog.value = false
   } catch (e) {
     authError.value = e.response?.data?.message || 'Pieslēgšanās kļūda.'
@@ -147,8 +151,7 @@ async function handleRegister() {
   authError.value   = ''
   try {
     const { data } = await axios.post('/api/auth/register', regForm.value)
-    localStorage.setItem('token', data.token)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
+    await auth.login(data.token, data.user?.role)
     loginDialog.value = false
   } catch (e) {
     authError.value = e.response?.data?.message || 'Reģistrācijas kļūda.'
@@ -157,15 +160,10 @@ async function handleRegister() {
   }
 }
 
-// Restore token on reload
-const isLoggedIn = ref(!!localStorage.getItem("token"))
-const isAdmin    = ref(false)
-
-const savedToken = localStorage.getItem('token')
-if (savedToken) {
-  axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`
+if (auth.token) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`
   axios.get('/api/user').then(({ data }) => {
-    isAdmin.value = data.role === 'admin'
+    auth.isAdmin.value = data.role === 'admin'
   }).catch(() => {})
 }
 </script>

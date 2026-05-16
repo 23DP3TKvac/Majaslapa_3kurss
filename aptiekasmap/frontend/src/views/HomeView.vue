@@ -311,6 +311,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+const isLoggedIn = computed(() => !!localStorage.getItem('token'))
 import axios from 'axios'
 
 const popularTags = ['Paracetamol', 'Ibuprofen', 'Amoxicillin', 'Loratadīns']
