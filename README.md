@@ -14,7 +14,7 @@
 |---------|-----|
 | 🖥️ Tīmekļa vietne | [aptiekas-map.netlify.app](https://aptiekas-map.netlify.app) |
 | ⚙️ Backend API | [majaslapa3kurss-production.up.railway.app](https://majaslapa3kurss-production.up.railway.app) |
-| 📁 GitHub | [github.com/23DP3TKvac/Majaslapa_3kurss](https://github.com/23DP3TKvac/Majaslapa_3kurss) |
+| 📁 GitHub | [github.com/23DP3TKvac/Majaslapa_3kurss](https://github.com/23DP3TKvac/AptiekasMap) |
 
 ---
 
