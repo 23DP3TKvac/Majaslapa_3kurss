@@ -29,6 +29,67 @@
           </v-card-actions>
         </v-card>
 
+        <!-- Medicine Sets -->
+        <v-card rounded="xl" elevation="3" class="mb-6">
+          <v-card-title class="pa-6 pb-2 d-flex align-center justify-space-between">
+            <span><v-icon color="primary" class="mr-2">mdi-package-variant</v-icon>Mani komplekti</span>
+            <v-btn color="primary" size="small" variant="tonal" rounded="lg" @click="createSetDialog = true">
+              <v-icon start>mdi-plus</v-icon> Jauns komplekts
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            <div v-if="setsLoading" class="text-center py-4">
+              <v-progress-circular color="primary" indeterminate />
+            </div>
+            <div v-else-if="sets.length === 0" class="text-center py-6 text-medium-emphasis">
+              <v-icon size="48">mdi-package-variant-closed</v-icon>
+              <p class="mt-2">Nav izveidotu komplektu</p>
+            </div>
+            <div v-else>
+              <v-expansion-panels>
+                <v-expansion-panel v-for="set in sets" :key="set.id" rounded="lg" class="mb-2">
+                  <v-expansion-panel-title>
+                    <div class="d-flex align-center justify-space-between w-100 mr-2">
+                      <span class="font-weight-bold">{{ set.name }}</span>
+                      <v-chip size="x-small" color="primary" variant="tonal">
+                        {{ set.medicines.length }} zāles
+                      </v-chip>
+                    </div>
+                  </v-expansion-panel-title>
+                  <v-expansion-panel-text>
+                    <p v-if="set.description" class="text-medium-emphasis text-body-2 mb-3">{{ set.description }}</p>
+                    <v-chip v-for="med in set.medicines" :key="med.id" class="mr-2 mb-2" color="primary" variant="tonal" size="small">
+                      {{ med.name }}
+                      <v-icon end size="14" @click="removeMedFromSet(set.id, med.id)">mdi-close</v-icon>
+                    </v-chip>
+                    <div class="mt-3 d-flex gap-2">
+                      <v-btn size="small" color="error" variant="outlined" rounded="lg" @click="deleteSet(set.id)">
+                        <v-icon start>mdi-delete</v-icon> Dzēst komplektu
+                      </v-btn>
+                    </div>
+                  </v-expansion-panel-text>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </div>
+          </v-card-text>
+        </v-card>
+
+        <!-- Create Set Dialog -->
+        <v-dialog v-model="createSetDialog" max-width="400">
+          <v-card rounded="xl" class="pa-2">
+            <v-card-title class="pt-4 px-6">Jauns komplekts</v-card-title>
+            <v-card-text class="px-6">
+              <v-text-field v-model="newSet.name" label="Nosaukums *" variant="outlined" class="mb-3" />
+              <v-text-field v-model="newSet.description" label="Apraksts" variant="outlined" />
+            </v-card-text>
+            <v-card-actions class="px-6 pb-4">
+              <v-spacer />
+              <v-btn variant="text" @click="createSetDialog = false">Atcelt</v-btn>
+              <v-btn color="primary" variant="flat" rounded="lg" @click="createSet">Izveidot</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
         <!-- Favorites -->
         <v-card rounded="xl" elevation="3" class="mb-6">
           <v-card-title class="pa-6 pb-2">
@@ -161,6 +222,44 @@ const historyLoading = ref(true)
 const notifLoading   = ref(true)
 const favorites  = ref([])
 const favLoading = ref(true)
+const sets           = ref([])
+const setsLoading    = ref(true)
+const createSetDialog = ref(false)
+const newSet         = ref({ name: '', description: '' })
+
+async function loadSets() {
+  try {
+    const { data } = await axios.get('/api/user/sets')
+    sets.value = data
+  } catch {} finally {
+    setsLoading.value = false
+  }
+}
+
+async function createSet() {
+  if (!newSet.value.name) return
+  try {
+    const { data } = await axios.post('/api/user/sets', newSet.value)
+    sets.value.push({ ...data, medicines: [] })
+    createSetDialog.value = false
+    newSet.value = { name: '', description: '' }
+  } catch {}
+}
+
+async function deleteSet(setId) {
+  try {
+    await axios.delete(`/api/user/sets/${setId}`)
+    sets.value = sets.value.filter(s => s.id !== setId)
+  } catch {}
+}
+
+async function removeMedFromSet(setId, medicineId) {
+  try {
+    const { data } = await axios.delete(`/api/user/sets/${setId}/medicines/${medicineId}`)
+    const set = sets.value.find(s => s.id === setId)
+    if (set) set.medicines = data.medicines
+  } catch {}
+}
 
 async function removeFavorite(medicineId) {
   try {
@@ -237,5 +336,7 @@ onMounted(async () => {
   } catch {} finally {
     favLoading.value = false
   }
+  
+  loadSets()
 })
 </script>
