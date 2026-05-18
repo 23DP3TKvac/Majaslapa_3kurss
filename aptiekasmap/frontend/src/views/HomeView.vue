@@ -555,12 +555,11 @@ async function openAvailability(med) {
     const query = encodeURIComponent(raw)
     const res = await fetch(`https://lv.wikipedia.org/api/rest_v1/page/summary/${query}`)
     const data = await res.json()
-    if (data.results?.[0]) {
-      const r = data.results[0]
+    if (data.extract) {
       fdaInfo.value = {
-        purpose: r.purpose?.[0] || null,
-        warnings: r.warnings?.[0] || null,
-        dosage: r.dosage_and_administration?.[0] || null,
+        purpose: data.extract || null,
+        warnings: null,
+        dosage: null,
       }
     }
   } catch {
