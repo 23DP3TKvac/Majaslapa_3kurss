@@ -2,10 +2,10 @@
 
 > Tīmekļa platforma zāļu pieejamības noteikšanai tuvākajās aptiekās
 
-**Autors:** Timurs Kvačovs  
-**Skola:** Rīgas Valsts Tehnikums — Datorikas nodaļa  
-**Modulis:** Datu bāzu programmēšana  
-**Mācību gads:** 2025/2026
+** Timurs Kvačovs  
+** Rīgas Valsts Tehnikums — Datorikas nodaļa  
+** Datu bāzu programmēšana  
+** 2025/2026
 
 ---
 
@@ -74,50 +74,6 @@ Latvijā nav vienotas platformas, kas apvienotu dažādu aptieku datus vienā vi
 | Admin | admin@aptiekasmap.lv | admin123 |
 | Lietotājs | janis@gmail.com | user123 |
 | Aptieka | benu@benu.lv | pharm123 |
-
----
-
-## 📁 Projekta struktūra
-aptiekasmap/
-├── frontend/              # Vue.js 3 + Vuetify 3
-│   ├── src/
-│   │   ├── views/         # HomeView, PharmaciesView, ProfileView, AdminView, StatisticsView
-│   │   ├── stores/        # Pinia auth store
-│   │   └── App.vue        # Navigācija ar lomu pārvaldību
-│   ├── public/
-│   │   └── _redirects     # Netlify/Vercel SPA redirects
-│   ├── .env.production    # Production API URL
-│   └── vite.config.js
-└── backend/               # Laravel 11
-├── app/
-│   ├── Http/Controllers/
-│   └── Models/
-├── database/
-│   ├── migrations/
-│   └── seeders/
-└── routes/api.php
-
----
-
-## ⚙️ Lokālā palaišana (GitHub Codespaces)
-
-```bash
-# 1. MySQL
-sudo pkill -9 mysqld 2>/dev/null; sleep 1
-sudo mkdir -p /var/run/mysqld && sudo chown mysql:mysql /var/run/mysqld
-sudo mysqld_safe --user=mysql --skip-syslog &
-sleep 5
-
-# 2. Backend (Terminal 1)
-cd aptiekasmap/backend
-php artisan serve --host=0.0.0.0 --port=8001
-
-# 3. Frontend (Terminal 2)
-cd aptiekasmap/frontend
-npm run dev
-```
-
----
 
 ## �� Galvenie API endpointi
 
