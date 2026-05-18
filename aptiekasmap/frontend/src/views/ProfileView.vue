@@ -29,6 +29,42 @@
           </v-card-actions>
         </v-card>
 
+        <!-- Favorites -->
+        <v-card rounded="xl" elevation="3" class="mb-6">
+          <v-card-title class="pa-6 pb-2">
+            <v-icon color="error" class="mr-2">mdi-heart</v-icon>
+            Favorīti
+          </v-card-title>
+          <v-card-text>
+            <div v-if="favLoading" class="text-center py-4">
+              <v-progress-circular color="primary" indeterminate />
+            </div>
+            <v-row v-else-if="favorites.length > 0">
+              <v-col v-for="med in favorites" :key="med.id" cols="12" sm="6">
+                <v-card rounded="xl" variant="tonal" color="primary">
+                  <v-card-item>
+                    <template #prepend>
+                      <v-icon color="primary">mdi-pill</v-icon>
+                    </template>
+                    <v-card-title class="text-body-2 font-weight-bold">{{ med.name }}</v-card-title>
+                    <v-card-subtitle>{{ med.form }} · {{ med.dose }}</v-card-subtitle>
+                    <template #append>
+                      <v-btn icon size="small" variant="text" color="error"
+                        @click="removeFavorite(med.id)">
+                        <v-icon>mdi-heart-off</v-icon>
+                      </v-btn>
+                    </template>
+                  </v-card-item>
+                </v-card>
+              </v-col>
+            </v-row>
+            <div v-else class="text-center py-6 text-medium-emphasis">
+              <v-icon size="48">mdi-heart-outline</v-icon>
+              <p class="mt-2">Favorītu saraksts ir tukšs</p>
+            </div>
+          </v-card-text>
+        </v-card>
+
         <!-- Search history -->
         <v-card rounded="xl" elevation="3" class="mb-6">
           <v-card-title class="pa-6 pb-2">
@@ -123,6 +159,15 @@ const history = ref([])
 const notifications = ref([])
 const historyLoading = ref(true)
 const notifLoading   = ref(true)
+const favorites  = ref([])
+const favLoading = ref(true)
+
+async function removeFavorite(medicineId) {
+  try {
+    await axios.delete(`/api/user/favorites/${medicineId}`)
+    favorites.value = favorites.value.filter(f => f.id !== medicineId)
+  } catch {}
+}
 
 const roleLabel = computed(() => {
   const roles = { admin: 'Administrators', pharmacy_rep: 'Aptieka', user: 'Lietotājs' }
@@ -184,6 +229,13 @@ onMounted(async () => {
     notifications.value = data
   } catch {} finally {
     notifLoading.value = false
+  }
+
+  try {
+    const { data } = await axios.get('/api/user/favorites')
+    favorites.value = data
+  } catch {} finally {
+    favLoading.value = false
   }
 })
 </script>
