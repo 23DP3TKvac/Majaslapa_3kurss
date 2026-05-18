@@ -279,8 +279,9 @@
               <v-btn type="submit" color="primary" size="large" rounded="lg" block :loading="contactLoading">
                 Nosūtīt ziņu <v-icon end>mdi-send</v-icon>
               </v-btn>
-              <v-alert v-if="contactSuccess" type="success" class="mt-3" density="compact">
-                ✓ Ziņojums veiksmīgi nosūtīts!
+              <v-alert v-if="contactSuccess" type="info" class="mt-3" density="compact">
+                <v-icon start>mdi-information</v-icon>
+                Funkcija drīzumā būs pieejama!
               </v-alert>
             </v-form>
           </v-card>
