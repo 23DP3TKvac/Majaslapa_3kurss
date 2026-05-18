@@ -29,7 +29,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/',           component: HomeView,       name: 'home' },
-    { path: '/pharmacies', component: PharmaciesView, name: 'pharmacies', meta: { requiresAuth: true } },
+    { path: '/pharmacies', component: PharmaciesView, name: 'pharmacies' },
     { path: '/profile',    component: ProfileView,    name: 'profile',    meta: { requiresAuth: true } },
     { path: '/admin',      component: AdminView,      name: 'admin',      meta: { requiresAuth: true } },
     { path: '/statistics', component: StatisticsView, name: 'statistics', meta: { requiresAuth: true } },

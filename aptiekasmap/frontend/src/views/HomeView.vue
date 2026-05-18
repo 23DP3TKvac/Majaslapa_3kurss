@@ -67,7 +67,7 @@
     </v-sheet>
 
     <!-- SEARCH SECTION -->
-    <v-container v-if="isLoggedIn" class="py-12" id="search-section"> 
+    <v-container class="py-12" id="search-section"> 
       <div class="text-center mb-8">
         <h2 class="text-h4 font-weight-bold mb-2" style="font-family:'Sora',sans-serif">Meklēt zāles</h2>
         <p class="text-medium-emphasis">Izmanto filtrus lai precīzi atrastu vajadzīgo medikamentu</p>
@@ -215,12 +215,6 @@
           <v-btn color="primary" variant="tonal" class="mt-4" @click="clearFilters">Notīrīt filtrus</v-btn>
         </v-col>
       </v-row>
-    </v-container>
-
-    <v-container v-else class="py-12 text-center">
-      <v-icon size="80" color="primary">mdi-lock</v-icon>
-      <h2 class="text-h4 font-weight-bold mt-4 mb-2">Lūdzu pieslēdzies</h2>
-      <p class="text-medium-emphasis mb-6">Lai meklētu zāles un skatītu aptiekas, nepieciešams pieslēgties.</p>
     </v-container>
 
     <!-- HOW IT WORKS -->
