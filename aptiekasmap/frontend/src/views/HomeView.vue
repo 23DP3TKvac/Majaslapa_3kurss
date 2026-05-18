@@ -326,6 +326,30 @@
             </v-list-item>
           </v-list>
         </v-card-text>
+
+      <!-- FDA info -->
+      <v-divider class="my-3" />
+      <div v-if="fdaLoading" class="text-center py-3">
+        <v-progress-circular size="24" indeterminate color="primary" />
+        <span class="ml-2 text-caption text-medium-emphasis">Ielādē FDA informāciju...</span>
+      </div>
+      <div v-else-if="fdaInfo" class="px-6 pb-2">
+        <div class="text-caption font-weight-bold mb-2">
+          <v-icon size="14" color="primary">mdi-information</v-icon>
+          Informācija no FDA datubāzes
+        </div>
+      <v-expansion-panels variant="accordion" density="compact">
+        <v-expansion-panel v-if="fdaInfo.purpose" title="Pielietojums">
+          <v-expansion-panel-text class="text-caption">{{ fdaInfo.purpose.slice(0, 300) }}</v-expansion-panel-text>
+        </v-expansion-panel>
+        <v-expansion-panel v-if="fdaInfo.warnings" title="Brīdinājumi">
+          <v-expansion-panel-text class="text-caption">{{ fdaInfo.warnings.slice(0, 300) }}</v-expansion-panel-text>
+        </v-expansion-panel>
+        <v-expansion-panel v-if="fdaInfo.dosage" title="Deva">
+          <v-expansion-panel-text class="text-caption">{{ fdaInfo.dosage.slice(0, 300) }}</v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </div>
         <v-card-actions class="px-6 pb-4">
           <v-btn v-if="isLoggedIn" color="primary" variant="tonal" rounded="lg" 
             prepend-icon="mdi-moped" @click="orderSnack = true">
@@ -503,11 +527,17 @@ function doHeroSearch() {
   if (heroQuery.value.trim()) quickSearch(heroQuery.value.trim())
 }
 
+const fdaInfo = ref(null)
+const fdaLoading = ref(false)
+
 async function openAvailability(med) {
   selectedMed.value = med
   availDialog.value = true
   availLoading.value = true
   availability.value = []
+  fdaInfo.value = null
+  fdaLoading.value = true
+
   try {
     const { data } = await axios.get(`/api/availability/${med.id}`)
     availability.value = data
@@ -518,6 +548,24 @@ async function openAvailability(med) {
     ]
   } finally {
     availLoading.value = false
+  }
+
+  try {
+    const query = encodeURIComponent(med.active_substance || med.name)
+    const res = await fetch(`https://api.fda.gov/drug/label.json?search=active_ingredient:${query}&limit=1`)
+    const data = await res.json()
+    if (data.results?.[0]) {
+      const r = data.results[0]
+      fdaInfo.value = {
+        purpose: r.purpose?.[0] || null,
+        warnings: r.warnings?.[0] || null,
+        dosage: r.dosage_and_administration?.[0] || null,
+      }
+    }
+  } catch {
+    fdaInfo.value = null
+  } finally {
+    fdaLoading.value = false
   }
 }
 
