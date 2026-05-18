@@ -204,6 +204,22 @@
             <v-btn color="primary" variant="tonal" rounded="lg" class="flex-grow-1" @click="openAvailability(med)">
               Skatīt aptiekas <v-icon end>mdi-arrow-right</v-icon>
             </v-btn>
+            <v-menu v-if="isLoggedIn">
+              <template #activator="{ props }">
+                <v-btn v-bind="props" icon variant="outlined" rounded="lg">
+                  <v-icon>mdi-package-variant</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-subheader>Pievienot komplektam</v-list-subheader>
+                <v-list-item v-if="sets.length === 0" disabled>
+                  <v-list-item-title class="text-medium-emphasis">Nav komplektu</v-list-item-title>
+              </v-list-item>
+              <v-list-item v-for="set in sets" :key="set.id" @click="addToSet(set.id, med.id)">
+                <v-list-item-title>{{ set.name }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
             <v-btn v-if="isLoggedIn" :color="isFavorite(med.id) ? 'error' : 'default'"
               :variant="isFavorite(med.id) ? 'flat' : 'outlined'"
               icon rounded="lg" @click="toggleFavorite(med.id)">
@@ -313,6 +329,28 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 const isLoggedIn = computed(() => !!localStorage.getItem('token'))
 const favorites = ref([])
+const sets = ref([])
+
+async function loadSets() {
+  if (!isLoggedIn.value) return
+  try {
+    const token = localStorage.getItem('token')
+    const { data } = await axios.get('/api/user/sets', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    sets.value = data
+  } catch {}
+}
+
+async function addToSet(setId, medicineId) {
+  try {
+    const token = localStorage.getItem('token')
+    await axios.post(`/api/user/sets/${setId}/medicines`, 
+      { medicine_id: medicineId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+  } catch {}
+}
 
 async function loadFavorites() {
   if (!isLoggedIn.value) return
@@ -474,6 +512,7 @@ function submitContact() {
 
 onMounted(async () => {
   loadFavorites()
+  loadSets()
   try {
     const [medsRes, formsRes] = await Promise.all([
       axios.get('/api/medicines'),
