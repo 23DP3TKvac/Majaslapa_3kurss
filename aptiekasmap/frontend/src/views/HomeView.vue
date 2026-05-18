@@ -335,11 +335,11 @@
       </div>
       <div v-else-if="fdaInfo" class="px-6 pb-2">
         <div class="text-caption font-weight-bold mb-2">
-          <v-icon size="14" color="primary">mdi-information</v-icon>
-          Informācija no FDA datubāzes
+          <v-icon size="14" color="primary"><mdi-wikipedia></v-icon>
+          Informācija no FDA Vikipēdijas
         </div>
       <v-expansion-panels variant="accordion" density="compact">
-        <v-expansion-panel v-if="fdaInfo.purpose" title="Pielietojums">
+        <v-expansion-panel v-if="fdaInfo.purpose" title="Apraksts">
           <v-expansion-panel-text class="text-caption">{{ fdaInfo.purpose.slice(0, 300) }}</v-expansion-panel-text>
         </v-expansion-panel>
         <v-expansion-panel v-if="fdaInfo.warnings" title="Brīdinājumi">
