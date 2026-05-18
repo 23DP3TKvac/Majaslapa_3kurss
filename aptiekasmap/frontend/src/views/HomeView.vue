@@ -335,7 +335,7 @@
       </div>
       <div v-else-if="fdaInfo" class="px-6 pb-2">
         <div class="text-caption font-weight-bold mb-2">
-          <v-icon size="14" color="primary"><mdi-wikipedia></v-icon>
+          <v-icon size="14" color="primary">mdi-wikipedia</v-icon>
           Informācija no FDA Vikipēdijas
         </div>
       <v-expansion-panels variant="accordion" density="compact">
